@@ -42,13 +42,16 @@ app.post("/create", async (req, res) => {
 
   const newQuiz = new quiz(quizBody);
 
-  await newQuiz.save();
-
-  res.status(200).json({
-    message: "Your quiz was created successfully!",
-    id: id,
-    password: password,
-  });
+  try {
+    await newQuiz.save();
+    res.status(200).json({
+      id: id,
+      password: password,
+      created: new Date().toISOString().slice(0, 10),
+    });
+  } catch {
+    res.status(400).send("Please make sure all input fields are filled up.");
+  }
 });
 
 // Start the server

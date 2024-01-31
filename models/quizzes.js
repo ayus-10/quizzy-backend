@@ -1,30 +1,20 @@
 const { Schema, model } = require("mongoose");
 
-const answerSchema = new Schema(
-  {
-    answerText: {
-      type: String,
-      required: true,
-    },
-    isCorrect: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  { _id: false }
-);
-
 const questionSchema = new Schema(
   {
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
     questionText: {
       type: String,
       required: true,
     },
-    answers: [answerSchema],
+    answers: [String],
+    correctAnswer: {
+      type: Number,
+      required: true,
+    },
   },
   { _id: false }
 );

@@ -42,7 +42,7 @@ export const registerController: RequestHandler = async (req, res) => {
     return res.status(201).send("Successfully registered user account");
   } catch (err) {
     console.log(err);
-    return res.status(500).send("Internal server error occured");
+    return res.sendStatus(500);
   }
 };
 
@@ -64,18 +64,22 @@ export const loginController: RequestHandler = async (req, res) => {
       return res.status(401).send("The password is incorrect");
     }
     const accessToken = jwt.sign({ email }, accessTokenSecret, {
-      expiresIn: "1m",
+      expiresIn: "5m",
     });
     const refreshToken = jwt.sign({ email }, refreshTokenSecret, {
-      expiresIn: "1y",
+      expiresIn: "30d",
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: nodeEnv === "production",
     });
-    return res.status(200).json({ accessToken });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: nodeEnv === "production",
+    });
+    return res.status(200).send(`Logged in as ${email}`);
   } catch (err) {
     console.log(err);
-    return res.status(500).send("Internal server error occured");
+    return res.sendStatus(500);
   }
 };

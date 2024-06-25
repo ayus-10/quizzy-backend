@@ -4,18 +4,19 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import usersRoute from "./routes/users.route";
-
-dotenv.config();
+import authRoute from "./routes/auth.route";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+dotenv.config();
 const DB_URI = process.env.DB_URI as string;
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || "8080";
 
 app.use("/users", usersRoute);
+app.use("/auth", authRoute);
 
 mongoose
   .connect(DB_URI)

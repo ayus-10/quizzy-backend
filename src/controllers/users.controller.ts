@@ -83,3 +83,9 @@ export const loginController: RequestHandler = async (req, res) => {
     return res.sendStatus(500);
   }
 };
+
+export const logoutController: RequestHandler = (_req, res) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  res.status(200).send("Logged out successfully");
+};

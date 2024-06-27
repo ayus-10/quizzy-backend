@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
 
 dotenv.config();
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
@@ -9,9 +10,6 @@ const nodeEnv = process.env.NODE_ENV as string;
 
 export const tokenController: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken as string;
-  if (!refreshToken) {
-    return res.status(401).send("Refresh token is missing");
-  }
   try {
     const tokenData = jwt.verify(
       refreshToken,
@@ -38,11 +36,18 @@ export const tokenController: RequestHandler = async (req, res) => {
       err instanceof jwt.JsonWebTokenError ||
       err instanceof jwt.TokenExpiredError
     ) {
-      res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
       return res.status(403).send("Refresh token is expired or invalid");
     }
     console.log(err);
     return res.sendStatus(500);
   }
+};
+
+export const userController: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const email = req.authorizedEmail;
+  return res.status(200).json({ email });
 };

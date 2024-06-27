@@ -6,14 +6,15 @@ import cookieParser from "cookie-parser";
 import usersRoute from "./routes/users.route";
 import authRoute from "./routes/auth.route";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-
 dotenv.config();
+const CLIENT_URL = process.env.CLIENT_URL as string;
 const DB_URI = process.env.DB_URI as string;
 const PORT = process.env.PORT || "8080";
+
+const app = express();
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/users", usersRoute);
 app.use("/auth", authRoute);

@@ -8,7 +8,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
 const nodeEnv = process.env.NODE_ENV as string;
 
-export const tokenController: RequestHandler = async (req, res) => {
+export const refreshUserTokens: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken as string;
   try {
     const tokenData = jwt.verify(
@@ -25,10 +25,12 @@ export const tokenController: RequestHandler = async (req, res) => {
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: nodeEnv === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: nodeEnv === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).send("Tokens refreshed successfully");
   } catch (err) {
@@ -36,6 +38,7 @@ export const tokenController: RequestHandler = async (req, res) => {
       err instanceof jwt.JsonWebTokenError ||
       err instanceof jwt.TokenExpiredError
     ) {
+      res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
       return res.status(403).send("Refresh token is expired or invalid");
     }
@@ -44,7 +47,7 @@ export const tokenController: RequestHandler = async (req, res) => {
   }
 };
 
-export const userController: RequestHandler = async (
+export const getUserEmail: RequestHandler = async (
   req: AuthorizedRequest,
   res
 ) => {

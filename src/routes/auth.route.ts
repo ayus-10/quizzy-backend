@@ -1,14 +1,15 @@
 import { Router } from "express";
 import {
-  tokenController,
-  userController,
+  refreshUserTokens,
+  getUserEmail,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { decodeUserTokenMiddleware } from "../middlewares/decode-user-token.middleware";
 
 const router = Router();
 
-router.get("/token", authMiddleware, tokenController);
+router.get("/token", authMiddleware, refreshUserTokens);
 
-router.get("/user", authMiddleware, userController);
+router.get("/user", authMiddleware, decodeUserTokenMiddleware, getUserEmail);
 
 export default router;

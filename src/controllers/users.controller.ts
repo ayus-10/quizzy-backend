@@ -13,7 +13,7 @@ const passwordOptions = {
   minUppercase: 0,
 };
 
-export const registerController: RequestHandler = async (req, res) => {
+export const registerUser: RequestHandler = async (req, res) => {
   const email = req.body.email as string;
   const password = req.body.password as string;
   try {
@@ -51,7 +51,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
 const nodeEnv = process.env.NODE_ENV as string;
 
-export const loginController: RequestHandler = async (req, res) => {
+export const loginUser: RequestHandler = async (req, res) => {
   const email = req.body.email as string;
   const password = req.body.password as string;
   try {
@@ -72,10 +72,12 @@ export const loginController: RequestHandler = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: nodeEnv === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: nodeEnv === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).send(`Logged in as ${email}`);
   } catch (err) {
@@ -84,7 +86,7 @@ export const loginController: RequestHandler = async (req, res) => {
   }
 };
 
-export const logoutController: RequestHandler = (_req, res) => {
+export const logoutUser: RequestHandler = (_req, res) => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
   return res.status(200).send("Logged out successfully");

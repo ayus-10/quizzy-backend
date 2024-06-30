@@ -1,10 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { ACCESS_TOKEN_SECRET } from "../config";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
-
-dotenv.config();
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
 
 export const decodeUserTokenMiddleware: RequestHandler = async (
   req: AuthorizedRequest,
@@ -15,7 +12,7 @@ export const decodeUserTokenMiddleware: RequestHandler = async (
   try {
     const tokenData = jwt.verify(
       accessToken,
-      accessTokenSecret
+      ACCESS_TOKEN_SECRET
     ) as jwt.JwtPayload;
     const email = tokenData.email as string;
     req.authorizedEmail = email;

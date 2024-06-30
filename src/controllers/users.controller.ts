@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { UsersModel } from "../model/users.model";
 import * as bcrypt from "bcrypt";
 import validator from "validator";
-import dotenv from "dotenv";
+import { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, NODE_ENV } from "../config";
 import jwt from "jsonwebtoken";
 
 const passwordOptions = {
@@ -46,11 +46,6 @@ export const registerUser: RequestHandler = async (req, res) => {
   }
 };
 
-dotenv.config();
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
-const nodeEnv = process.env.NODE_ENV as string;
-
 export const loginUser: RequestHandler = async (req, res) => {
   const email = req.body.email as string;
   const password = req.body.password as string;
@@ -63,20 +58,20 @@ export const loginUser: RequestHandler = async (req, res) => {
     if (!passwordCorrect) {
       return res.status(401).send("The password is incorrect");
     }
-    const accessToken = jwt.sign({ email }, accessTokenSecret, {
+    const accessToken = jwt.sign({ email }, ACCESS_TOKEN_SECRET, {
       expiresIn: "5m",
     });
-    const refreshToken = jwt.sign({ email }, refreshTokenSecret, {
+    const refreshToken = jwt.sign({ email }, REFRESH_TOKEN_SECRET, {
       expiresIn: "30d",
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: nodeEnv === "production",
+      secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: nodeEnv === "production",
+      secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).send(`Logged in as ${email}`);

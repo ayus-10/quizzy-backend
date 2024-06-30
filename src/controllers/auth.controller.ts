@@ -1,35 +1,30 @@
 import { RequestHandler } from "express";
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, NODE_ENV } from "../config";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
-
-dotenv.config();
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
-const nodeEnv = process.env.NODE_ENV as string;
 
 export const refreshUserTokens: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken as string;
   try {
     const tokenData = jwt.verify(
       refreshToken,
-      refreshTokenSecret
+      REFRESH_TOKEN_SECRET
     ) as jwt.JwtPayload;
     const email = tokenData.email as string;
-    const newAccessToken = jwt.sign({ email }, accessTokenSecret, {
+    const newAccessToken = jwt.sign({ email }, ACCESS_TOKEN_SECRET, {
       expiresIn: "5m",
     });
-    const newRefreshToken = jwt.sign({ email }, refreshTokenSecret, {
+    const newRefreshToken = jwt.sign({ email }, REFRESH_TOKEN_SECRET, {
       expiresIn: "30d",
     });
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: nodeEnv === "production",
+      secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: nodeEnv === "production",
+      secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).send("Tokens refreshed successfully");

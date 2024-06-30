@@ -1,15 +1,10 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import usersRoute from "./routes/users.route";
 import authRoute from "./routes/auth.route";
-
-dotenv.config();
-const CLIENT_URL = process.env.CLIENT_URL as string;
-const DB_URI = process.env.DB_URI as string;
-const PORT = process.env.PORT || "8080";
+import { CLIENT_URL, DB_URI, PORT } from "./config";
 
 const app = express();
 app.use(cors({ origin: CLIENT_URL, credentials: true }));

@@ -19,13 +19,13 @@ export const refreshUserTokens: RequestHandler = async (req, res) => {
     });
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: NODE_ENV === "production" ? "none" : "lax",
       secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: NODE_ENV === "production" ? "none" : "lax",
       secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });

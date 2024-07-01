@@ -66,13 +66,13 @@ export const loginUser: RequestHandler = async (req, res) => {
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: NODE_ENV === "production" ? "none" : "lax",
       secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: NODE_ENV === "production" ? "none" : "lax",
       secure: NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });

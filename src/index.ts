@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import usersRoute from "./routes/users.route";
 import authRoute from "./routes/auth.route";
+import quizRoute from "./routes/quiz.route";
 import { CLIENT_URL, DB_URI, PORT } from "./config";
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 app.use("/users", usersRoute);
 app.use("/auth", authRoute);
+app.use("/quiz", quizRoute);
 
 mongoose
   .connect(DB_URI)

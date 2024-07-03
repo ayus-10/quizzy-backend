@@ -7,7 +7,7 @@ export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
   res
 ) => {
-  const title = req.body.email as string;
+  const title = req.body.title as string;
   const startTime = req.body.startTime as number;
   const endTime = req.body.endTime as number;
   const email = req.authorizedEmail as string;

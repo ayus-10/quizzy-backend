@@ -18,7 +18,7 @@ export const validateQuizInfo: RequestHandler = async (req, res, next) => {
     return res.status(400).send("Please fill up all the fields");
   }
 
-  if (!validator.isAlphanumeric(title)) {
+  if (!validator.isAlphanumeric(title, undefined, { ignore: " " })) {
     return res.status(400).send("Title can only contain alphabets and numbers");
   }
 

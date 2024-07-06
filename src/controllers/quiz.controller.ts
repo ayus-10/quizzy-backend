@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
 import generator from "generate-password";
 import { QuizInfoModel } from "../model/quiz-info.model";
+import jwt from "jsonwebtoken";
+import { QUIZ_TOKEN_SECRET } from "../config";
 
 export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
@@ -29,10 +31,34 @@ export const saveQuizInfo: RequestHandler = async (
       createdBy: email,
       password,
     });
-
     await newQuizInfo.save();
-    return res.status(200).send("Quiz info saved successfully");
+    const quizToken = jwt.sign({ id }, QUIZ_TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
+    return res.status(200).json({ quizToken });
   } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};
+
+export const getQuizInfo: RequestHandler = async (req, res) => {
+  const quizToken = String(req.body.token);
+  try {
+    const tokenData = jwt.verify(
+      quizToken,
+      QUIZ_TOKEN_SECRET
+    ) as jwt.JwtPayload;
+    const id = tokenData.id as string;
+    const quizInfo = await QuizInfoModel.findOne({ id });
+    return res.status(200).json({ quizInfo });
+  } catch (err) {
+    if (
+      err instanceof jwt.JsonWebTokenError ||
+      err instanceof jwt.TokenExpiredError
+    ) {
+      return res.status(400).send("Token is invalid or expired");
+    }
     console.log(err);
     return res.sendStatus(500);
   }

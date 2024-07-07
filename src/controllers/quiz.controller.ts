@@ -4,6 +4,7 @@ import generator from "generate-password";
 import { QuizInfoModel } from "../model/quiz-info.model";
 import jwt from "jsonwebtoken";
 import { QUIZ_TOKEN_SECRET } from "../config";
+import { QuizQuestion } from "../interfaces/quiz-question.interface";
 
 export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
@@ -33,7 +34,7 @@ export const saveQuizInfo: RequestHandler = async (
     });
     await newQuizInfo.save();
     const quizToken = jwt.sign({ id }, QUIZ_TOKEN_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "3h",
     });
     return res.status(200).json({ quizToken });
   } catch (err) {
@@ -62,4 +63,16 @@ export const getQuizInfo: RequestHandler = async (req, res) => {
     console.log(err);
     return res.sendStatus(500);
   }
+};
+
+export const saveQuizQuestions: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const quizId = req.quizId as string;
+  const {
+    quizToken,
+    quizQuestions,
+  }: { quizToken: string; quizQuestions: QuizQuestion[] } = req.body;
+  res.status(200).send("Valid data");
 };

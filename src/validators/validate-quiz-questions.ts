@@ -2,10 +2,7 @@ import { RequestHandler } from "express";
 import { QuizQuestion } from "../interfaces/quiz-question.interface";
 
 export const validateQuizQuestions: RequestHandler = async (req, res, next) => {
-  const {
-    quizToken,
-    quizQuestions,
-  }: { quizToken: string; quizQuestions: QuizQuestion[] } = req.body;
+  const quizQuestions = req.body.quizQuestions as QuizQuestion[];
 
   const requestBodyValid =
     Array.isArray(quizQuestions) &&

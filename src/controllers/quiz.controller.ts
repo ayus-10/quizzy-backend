@@ -5,6 +5,7 @@ import { QuizInfoModel } from "../model/quiz-info.model";
 import jwt from "jsonwebtoken";
 import { QUIZ_TOKEN_SECRET } from "../config";
 import { QuizQuestion } from "../interfaces/quiz-question.interface";
+import { QuizQuestionModel } from "../model/quiz-question.model";
 
 export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
@@ -70,9 +71,13 @@ export const saveQuizQuestions: RequestHandler = async (
   res
 ) => {
   const quizId = req.quizId as string;
-  const {
-    quizToken,
-    quizQuestions,
-  }: { quizToken: string; quizQuestions: QuizQuestion[] } = req.body;
-  res.status(200).send("Valid data");
+  const quizQuestions = req.body.quizQuestions as QuizQuestion[];
+  quizQuestions.forEach((q) => (q.quizId = quizId)); // quizId property will not to be present in each object
+  try {
+    await QuizQuestionModel.insertMany(quizQuestions);
+    return res.status(200).send("Questions submitted successfully");
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
 };

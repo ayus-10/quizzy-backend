@@ -35,7 +35,7 @@ export const saveQuizInfo: RequestHandler = async (
     });
     await newQuizInfo.save();
     const quizToken = jwt.sign({ id }, QUIZ_TOKEN_SECRET, {
-      expiresIn: "3h",
+      expiresIn: "1y",
     });
     return res.status(200).json({ quizToken });
   } catch (err) {
@@ -76,6 +76,20 @@ export const saveQuizQuestions: RequestHandler = async (
   try {
     await QuizQuestionModel.insertMany(quizQuestions);
     return res.status(200).send("Questions submitted successfully");
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};
+
+export const getQuizQuestions: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const quizId = req.quizId;
+  try {
+    const quiz = await QuizQuestionModel.find({ quizId });
+    return res.status(200).json({ quiz });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);

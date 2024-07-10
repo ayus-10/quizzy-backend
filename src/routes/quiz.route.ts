@@ -2,6 +2,7 @@ import express from "express";
 import { validateQuizInfo } from "../validators/validate-quiz-info";
 import {
   getQuizInfo,
+  getQuizQuestions,
   saveQuizInfo,
   saveQuizQuestions,
 } from "../controllers/quiz.controller";
@@ -9,6 +10,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 import { decodeUserTokenMiddleware } from "../middlewares/decode-user-token.middleware";
 import { decodeQuizTokenMiddleware } from "../middlewares/decode-quiz-token.middleware";
 import { validateQuizQuestions } from "../validators/validate-quiz-questions";
+import { quizQuestionsMiddleware } from "../middlewares/quiz-questions.middleware";
 
 const router = express.Router();
 
@@ -35,5 +37,7 @@ router.post(
   validateQuizQuestions,
   saveQuizQuestions
 );
+
+router.post("/quiz-questions", quizQuestionsMiddleware, getQuizQuestions);
 
 export default router;

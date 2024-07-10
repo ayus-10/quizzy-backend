@@ -45,7 +45,7 @@ export const saveQuizInfo: RequestHandler = async (
 };
 
 export const getQuizInfo: RequestHandler = async (req, res) => {
-  const quizToken = String(req.body.token);
+  const quizToken = String(req.params.token);
   try {
     const tokenData = jwt.verify(
       quizToken,

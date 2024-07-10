@@ -13,22 +13,22 @@ import { validateQuizQuestions } from "../validators/validate-quiz-questions";
 const router = express.Router();
 
 router.post(
-  "/save-info",
+  "/info",
   authMiddleware,
   decodeUserTokenMiddleware,
   validateQuizInfo,
   saveQuizInfo
 );
 
-router.post(
-  "/get-info",
+router.get(
+  "/info/:token",
   authMiddleware,
   decodeUserTokenMiddleware,
   getQuizInfo
 );
 
 router.post(
-  "/save-questions",
+  "/questions",
   authMiddleware,
   decodeUserTokenMiddleware,
   decodeQuizTokenMiddleware,

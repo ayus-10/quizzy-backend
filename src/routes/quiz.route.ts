@@ -1,6 +1,7 @@
 import express from "express";
 import { validateQuizInfo } from "../validators/validate-quiz-info";
 import {
+  getAllQuizInfo,
   getQuizInfo,
   getQuizQuestions,
   saveQuizInfo,
@@ -28,6 +29,8 @@ router.get(
   decodeUserTokenMiddleware,
   getQuizInfo
 );
+
+router.get("/info", authMiddleware, decodeUserTokenMiddleware, getAllQuizInfo);
 
 router.post(
   "/questions",

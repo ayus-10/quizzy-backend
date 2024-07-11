@@ -53,7 +53,7 @@ export const getQuizInfo: RequestHandler = async (req, res) => {
     ) as jwt.JwtPayload;
     const id = tokenData.id as string;
     const quizInfo = await QuizInfoModel.findOne({ id });
-    return res.status(200).json({ quizInfo });
+    return res.status(200).json(quizInfo);
   } catch (err) {
     if (
       err instanceof jwt.JsonWebTokenError ||
@@ -61,6 +61,20 @@ export const getQuizInfo: RequestHandler = async (req, res) => {
     ) {
       return res.status(400).send("Token is invalid or expired");
     }
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};
+
+export const getAllQuizInfo: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const email = req.authorizedEmail;
+  try {
+    const infos = await QuizInfoModel.find({ createdBy: email }).exec();
+    return res.status(200).json({ infos });
+  } catch (err) {
     console.log(err);
     return res.sendStatus(500);
   }
@@ -88,7 +102,7 @@ export const getQuizQuestions: RequestHandler = async (
 ) => {
   const quizId = req.quizId;
   try {
-    const quiz = await QuizQuestionModel.find({ quizId });
+    const quiz = await QuizQuestionModel.find({ quizId }).exec();
     return res.status(200).json({ quiz });
   } catch (err) {
     console.log(err);

@@ -27,13 +27,14 @@ router.get(
   "/info/:token",
   authMiddleware,
   decodeUserTokenMiddleware,
+  decodeQuizTokenMiddleware,
   getQuizInfo
 );
 
 router.get("/info", authMiddleware, decodeUserTokenMiddleware, getAllQuizInfo);
 
 router.post(
-  "/questions",
+  "/questions/:token",
   authMiddleware,
   decodeUserTokenMiddleware,
   decodeQuizTokenMiddleware,

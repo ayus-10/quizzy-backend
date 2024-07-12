@@ -8,7 +8,7 @@ export const decodeQuizTokenMiddleware: RequestHandler = async (
   res,
   next
 ) => {
-  const quizToken = req.body.quizToken as string;
+  const quizToken = req.params.token as string;
   if (!quizToken) {
     return res.status(400).send("Quiz token is missing");
   }

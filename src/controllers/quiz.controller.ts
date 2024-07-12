@@ -44,23 +44,15 @@ export const saveQuizInfo: RequestHandler = async (
   }
 };
 
-export const getQuizInfo: RequestHandler = async (req, res) => {
-  const quizToken = String(req.params.token);
+export const getQuizInfo: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
   try {
-    const tokenData = jwt.verify(
-      quizToken,
-      QUIZ_TOKEN_SECRET
-    ) as jwt.JwtPayload;
-    const id = tokenData.id as string;
+    const id = req.quizId as string;
     const quizInfo = await QuizInfoModel.findOne({ id });
     return res.status(200).json(quizInfo);
   } catch (err) {
-    if (
-      err instanceof jwt.JsonWebTokenError ||
-      err instanceof jwt.TokenExpiredError
-    ) {
-      return res.status(400).send("Token is invalid or expired");
-    }
     console.log(err);
     return res.sendStatus(500);
   }

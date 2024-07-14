@@ -1,6 +1,7 @@
 import express from "express";
 import { validateQuizInfo } from "../validators/validate-quiz-info";
 import {
+  deleteQuiz,
   getAllQuizInfo,
   getQuizInfo,
   getQuizQuestions,
@@ -42,6 +43,8 @@ router.post(
   saveQuizQuestions
 );
 
-router.post("/quiz-questions", quizQuestionsMiddleware, getQuizQuestions);
+router.post("/questions", quizQuestionsMiddleware, getQuizQuestions);
+
+router.delete("/:id", authMiddleware, decodeUserTokenMiddleware, deleteQuiz);
 
 export default router;

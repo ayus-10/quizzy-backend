@@ -101,3 +101,23 @@ export const getQuizQuestions: RequestHandler = async (
     return res.sendStatus(500);
   }
 };
+
+export const deleteQuiz: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const email = req.authorizedEmail;
+  const id = req.params.id;
+  try {
+    const info = await QuizInfoModel.findOne({ id });
+    if (info && info.createdBy !== email) {
+      return res.status(401).send("You are not allowed to delete this quiz");
+    }
+    await QuizInfoModel.deleteOne({ id });
+    await QuizQuestionModel.deleteMany({ id });
+    return res.status(200).send("Successfully deleted the quiz");
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};

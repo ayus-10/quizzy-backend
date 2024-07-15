@@ -7,12 +7,14 @@ import {
   getQuizQuestions,
   saveQuizInfo,
   saveQuizQuestions,
+  updateQuizQuestions,
 } from "../controllers/quiz.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { decodeUserTokenMiddleware } from "../middlewares/decode-user-token.middleware";
 import { decodeQuizTokenMiddleware } from "../middlewares/decode-quiz-token.middleware";
 import { validateQuizQuestions } from "../validators/validate-quiz-questions";
 import { quizQuestionsMiddleware } from "../middlewares/quiz-questions.middleware";
+import { manageQuizMiddleware } from "../middlewares/manage-quiz.middleware";
 
 const router = express.Router();
 
@@ -45,6 +47,21 @@ router.post(
 
 router.post("/questions", quizQuestionsMiddleware, getQuizQuestions);
 
-router.delete("/:id", authMiddleware, decodeUserTokenMiddleware, deleteQuiz);
+router.delete(
+  "/:id",
+  authMiddleware,
+  decodeUserTokenMiddleware,
+  manageQuizMiddleware,
+  deleteQuiz
+);
+
+router.patch(
+  "/questions/:id",
+  authMiddleware,
+  decodeUserTokenMiddleware,
+  manageQuizMiddleware,
+  validateQuizQuestions,
+  updateQuizQuestions
+);
 
 export default router;

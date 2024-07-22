@@ -13,25 +13,22 @@ export const verifyJoin: RequestHandler = async (
 ) => {
   const fullname = req.body.fullname as string;
   const quizId = req.quizId as string;
-  if (
-    !fullname ||
-    validator.isAlphanumeric(fullname, undefined, { ignore: " " })
-  ) {
+  if (!validator.isAlphanumeric(fullname, undefined, { ignore: " " })) {
     return res.status(400).send("Please enter a valid name");
   }
   try {
     const quizInfo = await QuizInfoModel.findOne({ id: quizId });
     const startTime = quizInfo?.startTime as number;
     const endTime = quizInfo?.endTime as number;
+    const quizTitle = quizInfo?.title as string;
     const currentTime = getCurrentTime();
-    const waitDuration = startTime - currentTime;
     if (currentTime >= endTime) {
       return res.status(400).send("The quiz has already ended");
     }
     const joinToken = jwt.sign({ quizId, startTime }, JOIN_TOKEN_SECRET, {
       expiresIn: (endTime - startTime) * 1000,
     });
-    return res.status(200).json({ joinToken, waitDuration });
+    return res.status(200).json({ quizId, quizTitle, joinToken, startTime });
   } catch (err) {
     return res.sendStatus(500);
   }

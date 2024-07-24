@@ -48,7 +48,7 @@ export const joinQuiz: RequestHandler = async (req, res) => {
       return res.status(400).send("Can not join early");
     }
     const quizQuestions = await QuizQuestionModel.find({ quizId });
-    return res.status(200).json({ quizQuestions });
+    return res.status(200).json(quizQuestions);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(400).send("Not verified to join the quiz");

@@ -28,7 +28,9 @@ export const verifyJoin: RequestHandler = async (
     const joinToken = jwt.sign({ quizId, startTime }, JOIN_TOKEN_SECRET, {
       expiresIn: (endTime - startTime) * 1000,
     });
-    return res.status(200).json({ quizId, quizTitle, joinToken, startTime });
+    return res
+      .status(200)
+      .json({ quizId, quizTitle, joinToken, startTime, endTime });
   } catch (err) {
     return res.sendStatus(500);
   }

@@ -25,8 +25,8 @@ export const verifyJoin: RequestHandler = async (
     if (currentTime >= endTime) {
       return res.status(400).send("The quiz has already ended");
     }
-    const joinToken = jwt.sign({ quizId, startTime }, JOIN_TOKEN_SECRET, {
-      expiresIn: (endTime - startTime) * 1000,
+    const joinToken = jwt.sign({ quizId }, JOIN_TOKEN_SECRET, {
+      expiresIn: (endTime - startTime) * 1000 + 1000 * 60 * 5, // 5 minutes grace period
     });
     return res
       .status(200)
@@ -44,18 +44,28 @@ export const joinQuiz: RequestHandler = async (req, res) => {
       JOIN_TOKEN_SECRET
     ) as jwt.JwtPayload;
     const quizId = tokenData.quizId as string;
-    const startTime = tokenData.startTime as number;
+    const quizInfo = await QuizInfoModel.findOne({ id: quizId });
+    const startTime = quizInfo?.startTime as number;
     const currentTime = getCurrentTime();
     if (currentTime < startTime) {
       return res.status(400).send("Can not join early");
     }
     const quizQuestions = await QuizQuestionModel.find({ quizId });
-    return res.status(200).json(quizQuestions);
+    const quizQuestionsFiltered = quizQuestions.map((q) => {
+      return {
+        questionId: q._id,
+        quizId: q.quizId,
+        question: q.question,
+        answerChoices: q.answerChoices,
+      };
+    });
+    return res.status(200).json(quizQuestionsFiltered);
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       return res.status(400).send("Not verified to join the quiz");
     } else if (err instanceof jwt.TokenExpiredError) {
       return res.status(400).send("Too late to join the quiz");
     }
+    return res.sendStatus(500);
   }
 };

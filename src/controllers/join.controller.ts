@@ -32,7 +32,7 @@ export const verifyJoin: RequestHandler = async (
     });
     return res
       .status(200)
-      .json({ quizId, quizTitle, joinToken, startTime, endTime });
+      .json({ fullname, quizId, quizTitle, joinToken, startTime, endTime });
   } catch (err) {
     return res.sendStatus(500);
   }

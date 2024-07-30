@@ -12,7 +12,7 @@ export const validateQuizSubmission: RequestHandler = async (
   if (!fullname) {
     return res.status(400).send("Provided fullname is invalid");
   }
-  const joinToken = req.params.token as string;
+  const joinToken = req.body.joinToken as string;
   try {
     const tokenData = jwt.verify(
       joinToken,

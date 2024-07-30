@@ -3,7 +3,6 @@ import { validateQuizInfo } from "../validators/validate-quiz-info";
 import {
   deleteQuiz,
   getAllQuizInfo,
-  getQuizInfo,
   getQuizQuestions,
   saveQuizInfo,
   saveQuizQuestions,
@@ -26,18 +25,10 @@ router.post(
   saveQuizInfo
 );
 
-router.get(
-  "/info/:token",
-  authMiddleware,
-  decodeUserTokenMiddleware,
-  decodeQuizTokenMiddleware,
-  getQuizInfo
-);
-
 router.get("/info", authMiddleware, decodeUserTokenMiddleware, getAllQuizInfo);
 
 router.post(
-  "/questions/:token",
+  "/questions",
   authMiddleware,
   decodeUserTokenMiddleware,
   decodeQuizTokenMiddleware,
@@ -45,7 +36,7 @@ router.post(
   saveQuizQuestions
 );
 
-router.post("/questions", quizQuestionsMiddleware, getQuizQuestions);
+router.get("/questions", quizQuestionsMiddleware, getQuizQuestions);
 
 router.delete(
   "/:id",

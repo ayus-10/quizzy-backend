@@ -44,20 +44,6 @@ export const saveQuizInfo: RequestHandler = async (
   }
 };
 
-export const getQuizInfo: RequestHandler = async (
-  req: AuthorizedRequest,
-  res
-) => {
-  try {
-    const id = req.quizId as string;
-    const quizInfo = await QuizInfoModel.findOne({ id });
-    return res.status(200).json(quizInfo);
-  } catch (err) {
-    console.log(err);
-    return res.sendStatus(500);
-  }
-};
-
 export const getAllQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
   res

@@ -11,8 +11,8 @@ const router = Router();
 
 router.post("/verify", quizQuestionsMiddleware, verifyJoin);
 
-router.get("/quiz/:token", joinQuiz);
+router.post("/quiz", joinQuiz);
 
-router.post("/submit/:token", validateQuizSubmission, submitQuiz);
+router.post("/submit", validateQuizSubmission, submitQuiz);
 
 export default router;

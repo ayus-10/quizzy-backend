@@ -39,7 +39,7 @@ export const verifyJoin: RequestHandler = async (
 };
 
 export const joinQuiz: RequestHandler = async (req, res) => {
-  const joinToken = req.params.token as string;
+  const joinToken = req.body.joinToken as string;
   try {
     const tokenData = jwt.verify(
       joinToken,

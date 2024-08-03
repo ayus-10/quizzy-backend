@@ -2,12 +2,12 @@ import { RequestHandler } from "express";
 import validator from "validator";
 import jwt from "jsonwebtoken";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
-import { QuizInfoModel } from "../model/quiz-info.model";
+import { QuizInfoModel } from "../models/quiz-info.model";
 import { getCurrentTime } from "../utils/get-current-time";
 import { JOIN_TOKEN_SECRET } from "../config";
-import { QuizQuestionModel } from "../model/quiz-question.model";
+import { QuizQuestionModel } from "../models/quiz-question.model";
 import { QuizSubmission } from "../interfaces/quiz-submission.interface";
-import { QuizSubmissionModel } from "../model/quiz-submission.model";
+import { QuizSubmissionModel } from "../models/quiz-submission.model";
 
 export const verifyJoin: RequestHandler = async (
   req: AuthorizedRequest,

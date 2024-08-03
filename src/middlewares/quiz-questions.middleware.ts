@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
-import { QuizInfoModel } from "../model/quiz-info.model";
+import { QuizInfoModel } from "../models/quiz-info.model";
 
 export const quizQuestionsMiddleware: RequestHandler = async (
   req: AuthorizedRequest,

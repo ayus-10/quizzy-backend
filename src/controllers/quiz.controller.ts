@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import { AuthorizedRequest } from "../interfaces/authorized-request.interface";
 import generator from "generate-password";
-import { QuizInfoModel } from "../model/quiz-info.model";
+import { QuizInfoModel } from "../models/quiz-info.model";
 import jwt from "jsonwebtoken";
 import { QUIZ_TOKEN_SECRET } from "../config";
 import { QuizQuestion } from "../interfaces/quiz-question.interface";
-import { QuizQuestionModel } from "../model/quiz-question.model";
+import { QuizQuestionModel } from "../models/quiz-question.model";
 
 export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,

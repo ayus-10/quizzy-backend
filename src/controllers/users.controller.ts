@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { UsersModel } from "../model/users.model";
+import { UsersModel } from "../models/users.model";
 import * as bcrypt from "bcrypt";
 import validator from "validator";
 import { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, NODE_ENV } from "../config";

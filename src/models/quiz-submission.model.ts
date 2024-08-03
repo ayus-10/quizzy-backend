@@ -2,18 +2,30 @@ import { model, Schema } from "mongoose";
 
 const quizSubmissionSchema = new Schema(
   {
-    questionId: {
+    quizId: {
       type: String,
       required: true,
     },
-    selectedAnswerNumber: {
-      type: Number,
+    submittedBy: {
+      type: String,
       required: true,
     },
-    correctAnswerNumber: {
-      type: Number,
-      required: true,
-    },
+    submittedQuestions: [
+      {
+        questionId: {
+          type: String,
+          required: true,
+        },
+        selectedAnswerNumber: {
+          type: Number,
+          required: true,
+        },
+        correctAnswerNumber: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

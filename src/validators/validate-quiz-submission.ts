@@ -27,10 +27,10 @@ export const validateQuizSubmission: RequestHandler = async (
       return res.status(400).send("Token is invalid or expired");
     }
   }
-  const quiz = req.body.quizSubmission;
+  const subumittedQuestions = req.body.submittedQuestions;
   let submissionValid = false;
-  if (Array.isArray(quiz)) {
-    submissionValid = quiz.every(
+  if (Array.isArray(subumittedQuestions)) {
+    submissionValid = subumittedQuestions.every(
       (q) =>
         typeof q.questionId === "string" &&
         typeof q.selectedAnswerNumber === "number" &&

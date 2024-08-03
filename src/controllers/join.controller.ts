@@ -6,7 +6,7 @@ import { QuizInfoModel } from "../models/quiz-info.model";
 import { getCurrentTime } from "../utils/get-current-time";
 import { JOIN_TOKEN_SECRET } from "../config";
 import { QuizQuestionModel } from "../models/quiz-question.model";
-import { QuizSubmission } from "../interfaces/quiz-submission.interface";
+import { SubmittedQuestion } from "../interfaces/submitted-question.interface";
 import { QuizSubmissionModel } from "../models/quiz-submission.model";
 
 export const verifyJoin: RequestHandler = async (
@@ -78,19 +78,31 @@ export const submitQuiz: RequestHandler = async (
 ) => {
   const quizId = req.quizId as string;
   const fullname = req.body.fullname as string;
-  const quizSubmission = req.body.quizSubmission as QuizSubmission[];
+  const submittedQuestions = req.body.submittedQuestions as SubmittedQuestion[];
   try {
     const quizQuestions = await QuizQuestionModel.find({ quizId });
-    // Adding correct answer to every question object in quizSubmission
-    quizSubmission.forEach((qs) => {
-      const currentId = qs.questionId;
+    // Adding correct answer to every question object in submittedQuestion
+    submittedQuestions.forEach((sq) => {
+      const currentId = sq.questionId;
       const quizQuestion = quizQuestions.find((qq) => qq._id.equals(currentId));
-      qs.correctAnswerNumber = Number(quizQuestion?.correctChoice);
+      sq.correctAnswerNumber = Number(quizQuestion?.correctChoice);
     });
-    await QuizSubmissionModel.insertMany(quizSubmission);
+    const duplicateSubmission = await QuizSubmissionModel.findOne({
+      quizId,
+      submittedBy: fullname,
+    });
+    if (duplicateSubmission) {
+      return res.status(400).send("Duplicate submissions are not allowed");
+    }
+    const quizSubmission = new QuizSubmissionModel({
+      quizId,
+      submittedBy: fullname,
+      submittedQuestions,
+    });
+    const result = await quizSubmission.save();
+    return res.status(200).json({ result });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);
   }
-  return res.status(200).json({ quizId, fullname, quizSubmission });
 };

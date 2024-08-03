@@ -1,4 +1,4 @@
-export interface QuizSubmission {
+export interface SubmittedQuestion {
   questionId: string;
   selectedAnswerNumber: number;
   correctAnswerNumber: number;

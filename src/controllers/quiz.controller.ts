@@ -113,3 +113,21 @@ export const updateQuizQuestions: RequestHandler = async (req, res) => {
     return res.sendStatus(500);
   }
 };
+
+export const getQuestionsFromId: RequestHandler = async (req, res) => {
+  const quizId = req.params.quizId as string;
+  const questionIds = req.body.questionIds as string[];
+  if (!Array.isArray(questionIds)) {
+    return res.status(400).send("Invalid format");
+  }
+  try {
+    const allQuestions = await QuizQuestionModel.find({ quizId });
+    const requiredQuestions = allQuestions.filter((aq) =>
+      questionIds.some((id) => aq._id.equals(id))
+    );
+    return res.status(200).json(requiredQuestions);
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};

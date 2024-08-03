@@ -3,6 +3,7 @@ import { validateQuizInfo } from "../validators/validate-quiz-info";
 import {
   deleteQuiz,
   getAllQuizInfo,
+  getQuestionsFromId,
   getQuizQuestions,
   saveQuizInfo,
   saveQuizQuestions,
@@ -54,5 +55,7 @@ router.patch(
   validateQuizQuestions,
   updateQuizQuestions
 );
+
+router.post("/questions/:quizId", getQuestionsFromId);
 
 export default router;

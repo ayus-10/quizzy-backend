@@ -37,7 +37,13 @@ router.post(
   saveQuizQuestions
 );
 
-router.get("/questions", quizQuestionsMiddleware, getQuizQuestions);
+router.get(
+  "/questions",
+  authMiddleware,
+  decodeUserTokenMiddleware,
+  quizQuestionsMiddleware,
+  getQuizQuestions
+);
 
 router.delete(
   "/:id",

@@ -7,23 +7,29 @@ export const quizQuestionsMiddleware: RequestHandler = async (
   res,
   next
 ) => {
-  // Depending on whether it is a GET or POST request, id and password will be passed over request query or body
   const id = (req.query.id ?? req.body.id) as string;
-  const password = (req.query.password ?? req.body.password) as string;
-  const hasCredentials = !!(id && password);
-  if (hasCredentials) {
-    try {
+  const password = req.body.password as string;
+  try {
+    if (id && password) {
       const quiz = await QuizInfoModel.findOne({ id });
-      if (!quiz || password !== quiz.password) {
+      if (password !== quiz?.password) {
         return res.status(400).send("Either ID or Password is incorrect");
       }
       req.quizId = id;
       next();
-    } catch (err) {
-      console.log(err);
-      return res.sendStatus(500);
+    } else if (id) {
+      const quiz = await QuizInfoModel.findOne({ id });
+      const email = req.authorizedEmail as string;
+      if (quiz?.createdBy !== email) {
+        return res.status(400).send("Not allowed to view the quiz questions");
+      }
+      req.quizId = id;
+      next();
+    } else {
+      return res.status(400).send("Quiz credentials must be provided");
     }
-  } else {
-    return res.status(400).send("Quiz credentials must be provided");
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
   }
 };

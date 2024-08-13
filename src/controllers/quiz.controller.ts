@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import { QUIZ_TOKEN_SECRET } from "../config";
 import { QuizQuestion } from "../interfaces/quiz-question.interface";
 import { QuizQuestionModel } from "../models/quiz-question.model";
+import { QuizSubmissionModel } from "../models/quiz-submission.model";
+import { QuizResult } from "../interfaces/quiz-result.interface";
 
 export const saveQuizInfo: RequestHandler = async (
   req: AuthorizedRequest,
@@ -126,6 +128,40 @@ export const getQuestionsFromId: RequestHandler = async (req, res) => {
       questionIds.some((id) => aq._id.equals(id))
     );
     return res.status(200).json(requiredQuestions);
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+};
+
+export const getResult: RequestHandler = async (
+  req: AuthorizedRequest,
+  res
+) => {
+  const quizId = req.params.quizId as string;
+  const email = req.authorizedEmail;
+  try {
+    if (!quizId) {
+      return res.status(400).send("Quiz ID not recieved");
+    }
+    const quizInfo = await QuizInfoModel.findOne({ id: quizId });
+    if (quizInfo?.createdBy !== email) {
+      return res.status(400).send("Not allowed to view the result");
+    }
+    const submissions = await QuizSubmissionModel.find({ quizId });
+    const results: QuizResult[] = [];
+    submissions.forEach((s) => {
+      const submittedBy = s.submittedBy;
+      const totalQuestions = s.submittedQuestions.length;
+      let correctQuestions = 0;
+      s.submittedQuestions.forEach((sq) => {
+        if (sq.selectedAnswerNumber === sq.correctAnswerNumber) {
+          correctQuestions++;
+        }
+      });
+      results.push({ submittedBy, totalQuestions, correctQuestions });
+    });
+    return res.status(200).json({ results });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);

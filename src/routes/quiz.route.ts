@@ -5,6 +5,7 @@ import {
   getAllQuizInfo,
   getQuestionsFromId,
   getQuizQuestions,
+  getResult,
   saveQuizInfo,
   saveQuizQuestions,
   updateQuizQuestions,
@@ -63,5 +64,12 @@ router.patch(
 );
 
 router.post("/questions/:quizId", getQuestionsFromId);
+
+router.get(
+  "/result/:quizId",
+  authMiddleware,
+  decodeUserTokenMiddleware,
+  getResult
+);
 
 export default router;
